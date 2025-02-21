@@ -1,0 +1,17 @@
+{
+  "bsonType": "object",
+  "encryptMetadata": {
+    "keyId": [
+      { "$binary": { "base64": "YOUR_BASE64_ENCODED_KEY_ID", "subType": "04" } }
+    ]
+  },
+  "properties": {
+    "ssn": {
+      "encrypt": {
+        "bsonType": "string",
+        "algorithm": "AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic"
+      }
+    }
+  }
+}
+

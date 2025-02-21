@@ -1,0 +1,30 @@
+services:
+  mongodb:
+    image: mongodb/mongodb-enterprise-server:6.0.18-ubi9
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "37017:27017"  # Expose MongoDB on external port 37017, internal port remains 27017.
+      - "27020:27020"  # Expose MongoDB on external port 37017, internal port remains 27017.
+    command: ["--bind_ip_all"]
+    volumes:
+      - ./mongo-keyfile:/data/configdb/keyfile:ro
+    healthcheck:
+      test: ["CMD", "mongo", "--username", "root", "--password", "example", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  app:
+    build: .
+    container_name: node_app
+    volumes:
+      - ./:/usr/src/app
+    working_dir: /usr/src/app
+    depends_on:
+      - mongodb
+    environment:
+      # Inside the Docker network, the app connects using mongodb:27017
+      MONGO_URI: "mongodb://root:example@mongodb:27017/?authSource=admin&retryWrites=true"
+
