@@ -5,9 +5,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-    ports:
-      - "37017:27017"  # Expose MongoDB on external port 37017, internal port remains 27017.
-      - "27020:27020"  # Expose MongoDB on external port 37017, internal port remains 27017.
+    network_mode: host
     command: ["--bind_ip_all"]
     volumes:
       - ./mongo-keyfile:/data/configdb/keyfile:ro
@@ -19,6 +17,7 @@ services:
   app:
     build: .
     container_name: node_app
+    network_mode: host
     volumes:
       - ./:/usr/src/app
     working_dir: /usr/src/app
